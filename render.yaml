@@ -11,7 +11,7 @@ services:
     healthcheck:
         test: mysqladmin ping -h 127.0.0.1 -u$$MYSQL_USER -p$$MYSQL_PASSWORD
   app:
-    build: .
+    build: ./src
     ports:
       - 5000:5000
     depends_on:
