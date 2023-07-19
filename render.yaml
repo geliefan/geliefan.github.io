@@ -1,5 +1,7 @@
 services:
-  - name: database
+  - type: web
+    runtime: docker
+    name: database
     image: mysql:latest
     env:
       - name: MYSQL_ROOT_PASSWORD
@@ -15,7 +17,9 @@ services:
     healthCheck:
       command: ['mysqladmin', 'ping', '-h', '127.0.0.1', '-u$$MYSQL_USER', '-p$$MYSQL_PASSWORD']
 
-  - name: app
+  - type: web
+    runtime: docker
+    name: app
     buildCommand: ./src
     ports:
       - port: 5000
