@@ -1,42 +1,24 @@
-version: '3'
 services:
-  database:
+  - name: database
     image: mysql:latest
-    environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_DATABASE: project_db
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: admin
-      TZ: Asia/Tokyo
-    healthcheck:
-        test: mysqladmin ping -h 127.0.0.1 -u$$MYSQL_USER -p$$MYSQL_PASSWORD
-  app:
-    build: ./src
+    env:
+      - name: MYSQL_ROOT_PASSWORD
+        value: password
+      - name: MYSQL_DATABASE
+        value: project_db
+      - name: MYSQL_USER
+        value: admin
+      - name: MYSQL_PASSWORD
+        value: admin
+      - name: TZ
+        value: Asia/Tokyo
+    healthCheck:
+      command: ['mysqladmin', 'ping', '-h', '127.0.0.1', '-u$$MYSQL_USER', '-p$$MYSQL_PASSWORD']
+
+  - name: app
+    buildCommand: ./src
     ports:
-      - 5000:5000
-    depends_on:
-      database:
+      - port: 5000
+    dependsOn:
+      - service: database
         condition: service_healthy
-
-#   nginx:
-#     build:
-#       context: .
-#       dockerfile: Dockerfile_nginx
-#     ports:
-#       - 80:80
-#       - 443:443
-#     volumes:
-#       - ./certs:/etc/letsencrypt
-#     depends_on:
-#       - app
-
-#   certbot:
-#       image: certbot/certbot:latest
-#       volumes:
-#         - /etc/letsencrypt:/etc/letsencrypt
-#         - /var/www/html:/var/www/html
-#       command: ["--version"]
-
-# volumes:
-#   mysql-data:
-#   certs:
